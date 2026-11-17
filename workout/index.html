@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#f3f1ea" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#101010" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Workout">
+<title>9-Minute Workout</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⏱️</text></svg>">
+<style>
+  :root {
+    --bg: #f3f1ea;
+    --text: #161616;
+    --muted: #5c5c56;
+    --faint: #8a8a84;
+    --fill: #161616;
+    --on-fill: #f7f6f2;
+    --line: #d5d2c8;
+    --warn: #8d3418;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #101010;
+      --text: #f4f3ee;
+      --muted: #c2c1b8;
+      --faint: #9a998f;
+      --fill: #f4f3ee;
+      --on-fill: #101010;
+      --line: #3a3a34;
+      --warn: #ffc2a0;
+      color-scheme: dark;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+  }
+  body {
+    min-height: 100dvh;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    touch-action: manipulation;
+  }
+  main {
+    width: min(100%, 560px);
+    min-height: 100dvh;
+    margin: 0 auto;
+    padding:
+      calc(28px + env(safe-area-inset-top))
+      18px
+      calc(28px + env(safe-area-inset-bottom));
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    justify-content: safe center;
+    align-items: center;
+    text-align: center;
+    gap: 28px;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .heading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+  }
+  .step {
+    margin: 0;
+    font-size: 0.92rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: var(--muted);
+  }
+  h1 {
+    margin: 0;
+    max-width: 18ch;
+    font-size: clamp(28px, 7.2vw, 40px);
+    font-weight: 700;
+    line-height: 1.12;
+    letter-spacing: -0.02em;
+    overflow-wrap: anywhere;
+  }
+  .remain {
+    margin: 2px 0 0;
+    font-size: clamp(18px, 4.6vw, 22px);
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: 0.04em;
+    font-variant-numeric: tabular-nums;
+    color: var(--muted);
+  }
+  .line {
+    width: 100%;
+    margin: 0;
+    min-height: 5.5em;
+    padding: 0 4px;
+    font-size: clamp(34px, 9.2vw, 56px);
+    font-weight: 800;
+    line-height: 1.16;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+    overflow-wrap: break-word;
+  }
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+  }
+  button {
+    -webkit-appearance: none;
+    appearance: none;
+    font-family: inherit;
+    font-size: 1.15rem;
+    font-weight: 700;
+    min-height: 64px;
+    padding: 16px 28px;
+    border-radius: 14px;
+    border: 1px solid var(--line);
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+  button:active { transform: scale(0.98); }
+  button:focus-visible {
+    outline: 3px solid #2f6fed;
+    outline-offset: 3px;
+  }
+  #toggle {
+    min-width: 148px;
+    background: var(--fill);
+    color: var(--on-fill);
+    border-color: var(--fill);
+  }
+  #toggle[hidden] { display: none; }
+  #restart {
+    min-width: 124px;
+    background: transparent;
+    color: var(--text);
+  }
+  .status {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--warn);
+  }
+  .status:empty { display: none; }
+  footer {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+  }
+  .note {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .fine {
+    margin: 0;
+    font-size: 0.8rem;
+    line-height: 1.4;
+    color: var(--faint);
+  }
+  .fine a { color: var(--muted); }
+  /* Kept in the render tree. display:none can keep iOS Safari from playing. */
+  #track {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 1px;
+    height: 1px;
+    opacity: 0.02;
+    pointer-events: none;
+    border: 0;
+  }
+</style>
+</head>
+<body>
+<main>
+  <div class="heading">
+    <p id="step" class="step">1 of 9</p>
+    <h1 id="move">Lymphatic Hops</h1>
+    <p id="remain" class="remain" role="timer" aria-label="Time remaining">01:00</p>
+  </div>
+  <p id="line" class="line" aria-live="polite" aria-atomic="true"></p>
+  <div class="controls">
+    <button type="button" id="toggle">Start</button>
+    <button type="button" id="restart">Restart</button>
+  </div>
+  <p id="status" class="status" role="status"></p>
+  <footer>
+    <p class="note">Turn off silent mode / turn volume up</p>
+    <p class="fine">Gigi · AI voice · Keep screen open.</p>
+    <p class="fine"><a href="https://www.instagram.com/reel/DfeO21kIz7A/" target="_blank" rel="noopener noreferrer">Original routine</a></p>
+    <p class="fine">Stop if dizzy, in pain or short of breath.</p>
+  </footer>
+</main>
+<audio id="track" src="workout.mp3" preload="metadata" playsinline webkit-playsinline disableRemotePlayback aria-hidden="true"></audio>
+<script>
+(function () {
+  var TOTAL = 540;
+  var MOVES = [
+    "Lymphatic Hops",
+    "Body Waves",
+    "Trunk Twists",
+    "Arm Waves",
+    "Dead Arms",
+    "Golf Swings",
+    "Marches",
+    "Ballet Squats",
+    "Horseback Stance"
+  ];
+  // [start_s, end_s, text] — spoken windows in workout.mp3
+  var AFFIRMATIONS = [
+    [12, 15.345, "I am abundant, and I attract everything I desire into my life."],
+    [30, 32.0879, "I am a magnet for money and opportunities."],
+    [48, 50.3416, "All good things come into my life effortlessly."],
+    [72, 74.6707, "I am surrounded by love, peace, and happiness."],
+    [90, 92.9492, "Money comes to me in both expected and unexpected ways."],
+    [108, 110.6268, "I deserve all the wonderful things life has to offer."],
+    [132, 134.2758, "Every day, my life is filled with new blessings."],
+    [150, 152.6391, "I am a lucky person, and everything works in my favor."],
+    [168, 170.6566, "My mind is filled with thoughts of wealth and prosperity."],
+    [198, 200.4517, "I attract wonderful people who add value to my life."],
+    [220, 223.1516, "Everything I touch flourishes, grows, and prospers."],
+    [258, 260.306, "My life is filled with endless opportunities."],
+    [280, 282.894, "I am worthy of receiving love, success, and abundance."],
+    [318, 319.6618, "The universe always works in my favor."],
+    [340, 342.9367, "Every day, I receive more than I ever imagined possible."],
+    [378, 381.7388, "My heart is filled with gratitude, and my life is full of blessings."],
+    [400, 402.6724, "I am capable of achieving everything I set my mind to."],
+    [438, 440.2889, "Wealth, health, and love are part of my life."],
+    [460, 462.2346, "I am in the right place, at the perfect time."],
+    [498, 499.8148, "The best things in my life are yet to come."],
+    [520, 523.8442, "I am grateful for everything I already have and everything that is yet to come."]
+  ];
+
+  var track = document.getElementById("track");
+  try { track.playsInline = true; } catch (err) {}
+  var stepEl = document.getElementById("step");
+  var moveEl = document.getElementById("move");
+  var remainEl = document.getElementById("remain");
+  var lineEl = document.getElementById("line");
+  var toggle = document.getElementById("toggle");
+  var restartBtn = document.getElementById("restart");
+  var statusEl = document.getElementById("status");
+
+  var started = false;
+  var pendingPlay = false;
+  var pinned = null;
+  var loopGen = 0;
+  var wakeLock = null;
+
+  function mediaTime() {
+    var t = track.currentTime;
+    return isFinite(t) ? t : 0;
+  }
+
+  function shownTime() {
+    if (pinned !== null) {
+      if (Math.abs(mediaTime() - pinned) < 0.4) pinned = null;
+      else return pinned;
+    }
+    return mediaTime();
+  }
+
+  function clock(ms) {
+    var s = Math.max(0, Math.ceil(ms / 1000));
+    return String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0");
+  }
+
+  function remainLabel(t) {
+    return clock(60000 - ((t * 1000) % 60000));
+  }
+
+  function setText(el, text) {
+    if (el.textContent !== text) el.textContent = text;
+  }
+
+  function lineAt(t) {
+    for (var i = 0; i < AFFIRMATIONS.length; i++) {
+      var row = AFFIRMATIONS[i];
+      if (t >= row[0] && t < row[1]) return row[2];
+    }
+    return "";
+  }
+
+  function paint(t) {
+    var done = t >= TOTAL;
+    var index = Math.min(MOVES.length - 1, Math.floor(Math.max(0, t) / 60));
+    setText(stepEl, done ? "9 of 9 · Done" : (index + 1) + " of 9");
+    setText(moveEl, done ? "Routine complete" : MOVES[index]);
+    setText(remainEl, done ? clock(0) : remainLabel(t));
+    setText(lineEl, done ? "" : lineAt(t));
+    toggle.hidden = done;
+    if (!done) {
+      var playing = !track.paused || pendingPlay;
+      setText(toggle, playing ? "Pause" : (started ? "Resume" : "Start"));
+    }
+  }
+
+  function sync() {
+    paint(shownTime());
+  }
+
+  function setStatus(text) {
+    setText(statusEl, text);
+  }
+
+  function stopLoop() {
+    loopGen += 1;
+  }
+
+  function startLoop() {
+    var gen = ++loopGen;
+    var frame = function () {
+      if (gen !== loopGen) return;
+      sync();
+      if (gen !== loopGen) return;
+      if (!track.paused && !track.ended) requestAnimationFrame(frame);
+    };
+    requestAnimationFrame(frame);
+  }
+
+  function keepAwake(on) {
+    if (!navigator.wakeLock) return;
+    if (!on) {
+      var current = wakeLock;
+      wakeLock = null;
+      if (current) current.release().catch(function () {});
+      return;
+    }
+    if (wakeLock) return;
+    navigator.wakeLock.request("screen").then(function (lock) {
+      if (track.paused || track.ended) {
+        lock.release().catch(function () {});
+        return;
+      }
+      wakeLock = lock;
+      lock.addEventListener("release", function () {
+        if (wakeLock === lock) wakeLock = null;
+      });
+    }).catch(function () {});
+  }
+
+  function unlockAndPlay() {
+    track.playsInline = true;
+    track.setAttribute("playsinline", "");
+    track.setAttribute("webkit-playsinline", "");
+    track.muted = false;
+    track.volume = 1;
+    return track.play();
+  }
+
+  toggle.addEventListener("click", function () {
+    if (shownTime() >= TOTAL) return;
+    if (!track.paused || pendingPlay) {
+      pendingPlay = false;
+      track.pause();
+      sync();
+      return;
+    }
+    started = true;
+    pendingPlay = true;
+    var pending;
+    try {
+      pending = unlockAndPlay();
+    } catch (err) {
+      pendingPlay = false;
+      setStatus("Sound did not start. Tap Start again.");
+      sync();
+      return;
+    }
+    setStatus("");
+    sync();
+    if (pending && typeof pending.then === "function") {
+      pending.then(function () {
+        pendingPlay = false;
+        sync();
+      }).catch(function (err) {
+        pendingPlay = false;
+        if (!err || err.name !== "AbortError") {
+          setStatus("Sound did not start. Tap Start again.");
+        }
+        sync();
+      });
+    } else {
+      pendingPlay = false;
+    }
+  });
+
+  restartBtn.addEventListener("click", function () {
+    stopLoop();
+    pendingPlay = false;
+    started = false;
+    pinned = 0;
+    setStatus("");
+    track.pause();
+    try { track.currentTime = 0; } catch (err) {}
+    keepAwake(false);
+    sync();
+  });
+
+  track.addEventListener("play", function () {
+    keepAwake(true);
+    startLoop();
+  });
+  track.addEventListener("playing", function () {
+    setStatus("");
+    sync();
+  });
+  track.addEventListener("pause", function () {
+    keepAwake(false);
+    sync();
+  });
+  track.addEventListener("ended", function () {
+    pendingPlay = false;
+    stopLoop();
+    keepAwake(false);
+    sync();
+  });
+  track.addEventListener("seeked", sync);
+  track.addEventListener("timeupdate", sync);
+  track.addEventListener("waiting", function () {
+    if (started && !track.paused && track.currentTime < 0.05 && track.readyState < 3) {
+      setStatus("Loading sound…");
+    }
+  });
+  track.addEventListener("error", function () {
+    pendingPlay = false;
+    setStatus("Sound could not load. Check your connection and tap Start again.");
+    sync();
+  });
+  document.addEventListener("visibilitychange", function () {
+    if (document.visibilityState !== "visible") return;
+    sync();
+    if (!track.paused && !track.ended) {
+      keepAwake(true);
+      startLoop();
+    }
+  });
+
+  sync();
+})();
+</script>
+</body>
+</html>
