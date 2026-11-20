@@ -135,14 +135,14 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: 12px;
     width: 100%;
     min-height: 0;
     text-align: center;
   }
   .timer {
     margin: 0;
-    font-size: clamp(94px, 28vw, 146px);
+    font-size: clamp(64px, 18.7vw, 96px);
     font-weight: 800;
     line-height: 0.88;
     letter-spacing: -0.045em;
@@ -156,10 +156,10 @@
   .line {
     width: 100%;
     margin: 4px 0 0;
-    min-height: 2.4em;
-    font-size: clamp(34px, 8.6vw, 46px);
+    min-height: 2.2em;
+    font-size: clamp(40px, 11.3vw, 52px);
     font-weight: 800;
-    line-height: 1.14;
+    line-height: 1.12;
     letter-spacing: -0.02em;
     text-wrap: balance;
     overflow-wrap: break-word;
@@ -300,6 +300,20 @@
   .fine a { color: var(--muted); }
   #done { display: flex; flex-direction: column; flex: 1; gap: 8px; }
   #done[hidden], #live[hidden] { display: none; }
+  @media (max-height: 720px) {
+    main {
+      gap: 4px;
+      padding-top: calc(6px + env(safe-area-inset-top));
+      padding-bottom: calc(4px + env(safe-area-inset-bottom));
+    }
+    #live, #done { gap: 4px; }
+    .stage { gap: 6px; }
+    h1 { font-size: 24px; }
+    button { min-height: 52px; padding: 8px 12px; }
+    #restart, #test { min-height: 44px; }
+    .hint, .fine { font-size: 0.76rem; }
+    .line { line-height: 1.08; }
+  }
 </style>
 </head>
 <body>
@@ -542,7 +556,13 @@
       else if (t - LEAD >= TOTAL) paintDone();
       else paintRun(t - LEAD);
     }
+    settleLoading();
     updateSession();
+  }
+
+  function settleLoading() {
+    if (statusEl.textContent !== "Loading sound…") return;
+    if (track.paused || track.ended || track.readyState >= 2 || mediaTime() > 0.15) setStatus("");
   }
 
   function setStatus(text, isError) {
@@ -755,11 +775,13 @@
     setupSession();
   });
   track.addEventListener("playing", function () {
-    if (statusEl.textContent.indexOf("could not load") !== -1) setStatus("");
+    if (statusEl.textContent === "Loading sound…" || statusEl.textContent.indexOf("could not load") !== -1) setStatus("");
     sync();
   });
+  track.addEventListener("canplay", settleLoading);
   track.addEventListener("pause", function () {
     keepAwake(false);
+    settleLoading();
     sync();
   });
   track.addEventListener("ended", function () {
@@ -771,7 +793,7 @@
   track.addEventListener("seeked", sync);
   track.addEventListener("timeupdate", sync);
   track.addEventListener("waiting", function () {
-    if (started && !track.paused && track.currentTime < 0.05 && track.readyState < 3) {
+    if (started && !track.paused && track.readyState < 2 && mediaTime() < 0.2) {
       setStatus("Loading sound…");
     }
   });
