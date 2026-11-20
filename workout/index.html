@@ -142,7 +142,7 @@
   }
   .timer {
     margin: 0;
-    font-size: clamp(108px, 32vw, 168px);
+    font-size: clamp(94px, 28vw, 146px);
     font-weight: 800;
     line-height: 0.88;
     letter-spacing: -0.045em;
@@ -156,10 +156,10 @@
   .line {
     width: 100%;
     margin: 4px 0 0;
-    min-height: 2.6em;
-    font-size: clamp(26px, 6.8vw, 36px);
-    font-weight: 700;
-    line-height: 1.18;
+    min-height: 2.4em;
+    font-size: clamp(34px, 8.6vw, 46px);
+    font-weight: 800;
+    line-height: 1.14;
     letter-spacing: -0.02em;
     text-wrap: balance;
     overflow-wrap: break-word;
@@ -282,11 +282,12 @@
   }
   .status.error { color: var(--warn); }
   .status:empty { display: none; }
-  .note {
+  .hint {
     margin: 2px 0 0;
     text-align: center;
-    font-size: 0.95rem;
-    font-weight: 700;
+    font-size: 0.84rem;
+    font-weight: 600;
+    line-height: 1.35;
     color: var(--muted);
   }
   .fine {
@@ -343,9 +344,7 @@
       <button type="button" id="test">Test sound</button>
     </div>
     <p id="status" class="status" role="status"></p>
-    <p class="note">Turn off silent mode / turn volume up</p>
-    <p class="fine">Test sound plays a beep, then a voice.</p>
-    <p class="fine">Gigi · AI voice · Keep screen open.</p>
+    <p class="hint">Test sound plays a beep, then a voice. Turn off silent mode / turn volume up.</p>
     <p class="fine"><a href="https://www.instagram.com/reel/DfeO21kIz7A/" target="_blank" rel="noopener noreferrer">Original routine</a></p>
     <p class="fine">Stop if dizzy, in pain or short of breath.</p>
   </div>
@@ -739,7 +738,7 @@
       sync();
       return;
     }
-    setStatus("Listen for a beep, then a voice.");
+    setStatus("");
     sync();
     if (pending && pending.catch) {
       pending.catch(function (err) {
