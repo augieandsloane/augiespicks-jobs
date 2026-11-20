@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#f3f1ea" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#101010" media="(prefers-color-scheme: dark)">
@@ -19,7 +20,8 @@
     --faint: #8a8a84;
     --fill: #161616;
     --on-fill: #f7f6f2;
-    --line: #d5d2c8;
+    --line: #d8d4ca;
+    --track: #e4e0d6;
     --warn: #8d3418;
     color-scheme: light;
   }
@@ -27,11 +29,12 @@
     :root {
       --bg: #101010;
       --text: #f4f3ee;
-      --muted: #c2c1b8;
-      --faint: #9a998f;
+      --muted: #c8c7be;
+      --faint: #9b9a91;
       --fill: #f4f3ee;
-      --on-fill: #101010;
+      --on-fill: #141414;
       --line: #3a3a34;
+      --track: #2a2a26;
       --warn: #ffc2a0;
       color-scheme: dark;
     }
@@ -43,91 +46,156 @@
     color: var(--text);
   }
   body {
-    min-height: 100dvh;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     -webkit-font-smoothing: antialiased;
     touch-action: manipulation;
   }
   main {
-    width: min(100%, 560px);
+    width: min(100%, 520px);
+    min-height: 100vh;
     min-height: 100dvh;
     margin: 0 auto;
     padding:
-      calc(28px + env(safe-area-inset-top))
-      18px
-      calc(28px + env(safe-area-inset-bottom));
+      calc(10px + env(safe-area-inset-top))
+      16px
+      calc(8px + env(safe-area-inset-bottom));
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    justify-content: safe center;
-    align-items: center;
-    text-align: center;
-    gap: 28px;
+    gap: 8px;
     -webkit-user-select: none;
     user-select: none;
   }
-  .heading {
+  .top {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 8px;
+    justify-content: space-between;
+    gap: 12px;
     width: 100%;
   }
   .step {
     margin: 0;
-    font-size: 0.92rem;
-    font-weight: 600;
+    font-size: 0.95rem;
+    font-weight: 700;
     letter-spacing: 0.01em;
     color: var(--muted);
   }
+  .dots {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .dots i {
+    display: block;
+    width: 8px;
+    height: 8px;
+    border-radius: 99px;
+    border: 1.5px solid var(--faint);
+    background: transparent;
+  }
+  .dots i.done {
+    background: var(--muted);
+    border-color: var(--muted);
+  }
+  .dots i.on {
+    width: 18px;
+    background: var(--text);
+    border-color: var(--text);
+  }
+  #live, #done {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    gap: 8px;
+    width: 100%;
+    min-height: 0;
+  }
+  #done { align-items: center; text-align: center; }
+  #done .dots { justify-content: center; }
   h1 {
     margin: 0;
-    max-width: 18ch;
-    font-size: clamp(28px, 7.2vw, 40px);
+    width: 100%;
+    font-size: clamp(26px, 6.4vw, 34px);
     font-weight: 700;
-    line-height: 1.12;
-    letter-spacing: -0.02em;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    text-align: center;
     overflow-wrap: anywhere;
   }
-  .remain {
-    margin: 2px 0 0;
-    font-size: clamp(18px, 4.6vw, 22px);
+  .next {
+    margin: 0;
+    font-size: 1rem;
     font-weight: 600;
-    line-height: 1.1;
-    letter-spacing: 0.04em;
-    font-variant-numeric: tabular-nums;
+    text-align: center;
     color: var(--muted);
+  }
+  .next:empty { display: none; }
+  .stage {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    min-height: 0;
+    text-align: center;
+  }
+  .timer {
+    margin: 0;
+    font-size: clamp(108px, 32vw, 168px);
+    font-weight: 800;
+    line-height: 0.88;
+    letter-spacing: -0.045em;
+    font-variant-numeric: tabular-nums lining-nums;
+    font-feature-settings: "tnum" 1, "lnum" 1;
+  }
+  .timer.done-word {
+    font-size: clamp(80px, 22vw, 120px);
+    letter-spacing: -0.04em;
   }
   .line {
     width: 100%;
-    margin: 0;
-    min-height: 5.5em;
-    padding: 0 4px;
-    font-size: clamp(34px, 9.2vw, 56px);
-    font-weight: 800;
-    line-height: 1.16;
-    letter-spacing: -0.025em;
+    margin: 4px 0 0;
+    min-height: 2.6em;
+    font-size: clamp(26px, 6.8vw, 36px);
+    font-weight: 700;
+    line-height: 1.18;
+    letter-spacing: -0.02em;
     text-wrap: balance;
     overflow-wrap: break-word;
   }
-  .controls {
+  .bar {
+    width: 100%;
+    height: 5px;
+    border-radius: 99px;
+    background: var(--track);
+    overflow: hidden;
+  }
+  .bar span {
+    display: block;
+    height: 100%;
+    width: 0;
+    border-radius: 99px;
+    background: var(--text);
+  }
+  .transport {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    gap: 12px;
+    align-items: stretch;
+    gap: 8px;
     width: 100%;
   }
   button {
     -webkit-appearance: none;
     appearance: none;
     font-family: inherit;
-    font-size: 1.15rem;
+    font-size: 1.12rem;
     font-weight: 700;
     min-height: 64px;
-    padding: 16px 28px;
-    border-radius: 14px;
-    border: 1px solid var(--line);
+    padding: 12px 14px;
+    border-radius: 16px;
+    border: 1.5px solid var(--line);
+    background: transparent;
+    color: var(--text);
     cursor: pointer;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
@@ -135,82 +203,156 @@
   button:active { transform: scale(0.98); }
   button:focus-visible {
     outline: 3px solid #2f6fed;
-    outline-offset: 3px;
+    outline-offset: 2px;
   }
+  button:disabled {
+    opacity: 0.38;
+    cursor: default;
+    transform: none;
+  }
+  #back, #next { flex: 0 0 92px; }
   #toggle {
-    min-width: 148px;
+    flex: 1;
     background: var(--fill);
     color: var(--on-fill);
     border-color: var(--fill);
   }
-  #toggle[hidden] { display: none; }
-  #restart {
-    min-width: 124px;
-    background: transparent;
-    color: var(--text);
+  #restart, #test {
+    width: 100%;
+    min-height: 52px;
+    font-size: 1.02rem;
+    background: var(--bg);
+  }
+  #done-restart {
+    width: 100%;
+    flex: 0 0 auto;
+    min-height: 68px;
+    font-size: 1.2rem;
+    background: var(--fill);
+    color: var(--on-fill);
+    border-color: var(--fill);
+  }
+  .sub {
+    margin: 0;
+    text-align: center;
+    font-size: 1.05rem;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .sound-row {
+    position: relative;
+    width: 100%;
+    min-height: 56px;
+  }
+  /* Real on-screen box. A 1px / near-invisible audio element is dropped by iOS. */
+  .sound-row audio {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 1;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .sound-row button { position: relative; z-index: 1; }
+  audio::-webkit-media-controls-enclosure,
+  audio::-webkit-media-controls-panel,
+  audio::-webkit-media-controls-play-button,
+  audio::-webkit-media-controls-start-playback-button,
+  audio::-webkit-media-controls-overlay-play-button {
+    display: none !important;
+    -webkit-appearance: none;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .tools {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
   }
   .status {
     margin: 0;
-    font-size: 0.95rem;
+    min-height: 0;
+    text-align: center;
+    font-size: 0.92rem;
     font-weight: 600;
-    color: var(--warn);
+    color: var(--muted);
   }
+  .status.error { color: var(--warn); }
   .status:empty { display: none; }
-  footer {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    width: 100%;
-  }
   .note {
-    margin: 0;
+    margin: 2px 0 0;
+    text-align: center;
     font-size: 0.95rem;
-    font-weight: 600;
+    font-weight: 700;
     color: var(--muted);
   }
   .fine {
     margin: 0;
-    font-size: 0.8rem;
-    line-height: 1.4;
+    text-align: center;
+    font-size: 0.78rem;
+    line-height: 1.35;
     color: var(--faint);
   }
   .fine a { color: var(--muted); }
-  /* Kept in the render tree. display:none can keep iOS Safari from playing. */
-  #track {
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 1px;
-    height: 1px;
-    opacity: 0.02;
-    pointer-events: none;
-    border: 0;
-  }
+  #done { display: flex; flex-direction: column; flex: 1; gap: 8px; }
+  #done[hidden], #live[hidden] { display: none; }
 </style>
 </head>
 <body>
 <main>
-  <div class="heading">
-    <p id="step" class="step">1 of 9</p>
+  <section id="live">
+    <div class="top">
+      <p id="step" class="step">1 of 9</p>
+      <div id="dots" class="dots" role="img" aria-label="Move 1 of 9"></div>
+    </div>
     <h1 id="move">Lymphatic Hops</h1>
-    <p id="remain" class="remain" role="timer" aria-label="Time remaining">01:00</p>
-  </div>
-  <p id="line" class="line" aria-live="polite" aria-atomic="true"></p>
-  <div class="controls">
-    <button type="button" id="toggle">Start</button>
+    <p id="next" class="next"></p>
+    <div class="stage">
+      <p id="timer" class="timer" role="timer" aria-label="Time remaining">1:00</p>
+      <p id="line" class="line" aria-live="polite" aria-atomic="true"></p>
+    </div>
+    <div class="bar" aria-hidden="true"><span id="fill"></span></div>
+    <div class="transport">
+      <button type="button" id="back" disabled>Back</button>
+      <button type="button" id="toggle">Start</button>
+      <button type="button" id="next" disabled>Next</button>
+    </div>
     <button type="button" id="restart">Restart</button>
-  </div>
-  <p id="status" class="status" role="status"></p>
-  <footer>
+  </section>
+
+  <section id="done" hidden>
+    <div class="top">
+      <p class="step">9 of 9</p>
+      <div class="dots" id="done-dots" aria-hidden="true"></div>
+    </div>
+    <h1>Routine complete</h1>
+    <div class="stage">
+      <p class="timer done-word">Done</p>
+      <p class="sub">All 9 moves.</p>
+    </div>
+    <button type="button" id="done-restart">Restart</button>
+  </section>
+
+  <div class="tools">
+    <div class="sound-row">
+      <audio id="track" src="workout-v2.mp3" preload="auto" playsinline webkit-playsinline controls controlslist="nodownload nofullscreen noremoteplayback" disableRemotePlayback x-webkit-airplay="deny" tabindex="-1" aria-hidden="true"></audio>
+      <audio id="sample" src="test.mp3" preload="auto" playsinline webkit-playsinline controls controlslist="nodownload nofullscreen noremoteplayback" disableRemotePlayback x-webkit-airplay="deny" tabindex="-1" aria-hidden="true"></audio>
+      <button type="button" id="test">Test sound</button>
+    </div>
+    <p id="status" class="status" role="status"></p>
     <p class="note">Turn off silent mode / turn volume up</p>
+    <p class="fine">Test sound plays a beep, then a voice.</p>
     <p class="fine">Gigi · AI voice · Keep screen open.</p>
     <p class="fine"><a href="https://www.instagram.com/reel/DfeO21kIz7A/" target="_blank" rel="noopener noreferrer">Original routine</a></p>
     <p class="fine">Stop if dizzy, in pain or short of breath.</p>
-  </footer>
+  </div>
 </main>
-<audio id="track" src="workout.mp3" preload="metadata" playsinline webkit-playsinline disableRemotePlayback aria-hidden="true"></audio>
 <script>
 (function () {
+  var LEAD = 3;
   var TOTAL = 540;
   var MOVES = [
     "Lymphatic Hops",
@@ -223,39 +365,49 @@
     "Ballet Squats",
     "Horseback Stance"
   ];
-  // [start_s, end_s, text] — spoken windows in workout.mp3
-  var AFFIRMATIONS = [
-    [12, 15.345, "I am abundant, and I attract everything I desire into my life."],
-    [30, 32.0879, "I am a magnet for money and opportunities."],
-    [48, 50.3416, "All good things come into my life effortlessly."],
-    [72, 74.6707, "I am surrounded by love, peace, and happiness."],
-    [90, 92.9492, "Money comes to me in both expected and unexpected ways."],
-    [108, 110.6268, "I deserve all the wonderful things life has to offer."],
-    [132, 134.2758, "Every day, my life is filled with new blessings."],
-    [150, 152.6391, "I am a lucky person, and everything works in my favor."],
-    [168, 170.6566, "My mind is filled with thoughts of wealth and prosperity."],
-    [198, 200.4517, "I attract wonderful people who add value to my life."],
-    [220, 223.1516, "Everything I touch flourishes, grows, and prospers."],
-    [258, 260.306, "My life is filled with endless opportunities."],
-    [280, 282.894, "I am worthy of receiving love, success, and abundance."],
-    [318, 319.6618, "The universe always works in my favor."],
-    [340, 342.9367, "Every day, I receive more than I ever imagined possible."],
-    [378, 381.7388, "My heart is filled with gratitude, and my life is full of blessings."],
-    [400, 402.6724, "I am capable of achieving everything I set my mind to."],
-    [438, 440.2889, "Wealth, health, and love are part of my life."],
-    [460, 462.2346, "I am in the right place, at the perfect time."],
-    [498, 499.8148, "The best things in my life are yet to come."],
-    [520, 523.8442, "I am grateful for everything I already have and everything that is yet to come."]
+  // Workout-clock seconds. Each line stays up until the next one starts.
+  var LINES = [
+    [12, "I am abundant, and I attract everything I desire into my life."],
+    [30, "I am a magnet for money and opportunities."],
+    [48, "All good things come into my life effortlessly."],
+    [72, "I am surrounded by love, peace, and happiness."],
+    [90, "Money comes to me in both expected and unexpected ways."],
+    [108, "I deserve all the wonderful things life has to offer."],
+    [132, "Every day, my life is filled with new blessings."],
+    [150, "I am a lucky person, and everything works in my favor."],
+    [168, "My mind is filled with thoughts of wealth and prosperity."],
+    [198, "I attract wonderful people who add value to my life."],
+    [220, "Everything I touch flourishes, grows, and prospers."],
+    [258, "My life is filled with endless opportunities."],
+    [280, "I am worthy of receiving love, success, and abundance."],
+    [318, "The universe always works in my favor."],
+    [340, "Every day, I receive more than I ever imagined possible."],
+    [378, "My heart is filled with gratitude, and my life is full of blessings."],
+    [400, "I am capable of achieving everything I set my mind to."],
+    [438, "Wealth, health, and love are part of my life."],
+    [460, "I am in the right place, at the perfect time."],
+    [498, "The best things in my life are yet to come."],
+    [520, "I am grateful for everything I already have and everything that is yet to come."]
   ];
 
   var track = document.getElementById("track");
-  try { track.playsInline = true; } catch (err) {}
+  var sample = document.getElementById("sample");
+  var live = document.getElementById("live");
+  var done = document.getElementById("done");
   var stepEl = document.getElementById("step");
   var moveEl = document.getElementById("move");
-  var remainEl = document.getElementById("remain");
+  var nextEl = document.getElementById("next");
+  var timerEl = document.getElementById("timer");
   var lineEl = document.getElementById("line");
+  var fillEl = document.getElementById("fill");
+  var dotsEl = document.getElementById("dots");
+  var doneDots = document.getElementById("done-dots");
+  var backBtn = document.getElementById("back");
+  var nextBtn = document.getElementById("next");
   var toggle = document.getElementById("toggle");
   var restartBtn = document.getElementById("restart");
+  var doneRestart = document.getElementById("done-restart");
+  var testBtn = document.getElementById("test");
   var statusEl = document.getElementById("status");
 
   var started = false;
@@ -263,6 +415,18 @@
   var pinned = null;
   var loopGen = 0;
   var wakeLock = null;
+  var lastSession = 0;
+
+  for (var i = 0; i < MOVES.length; i++) {
+    dotsEl.appendChild(document.createElement("i"));
+    doneDots.appendChild(document.createElement("i"));
+  }
+  var dots = dotsEl.querySelectorAll("i");
+  var doneMarks = doneDots.querySelectorAll("i");
+  for (var d = 0; d < doneMarks.length; d++) doneMarks[d].className = "done";
+
+  try { track.playsInline = true; } catch (err) {}
+  try { sample.playsInline = true; } catch (err) {}
 
   function mediaTime() {
     var t = track.currentTime;
@@ -271,7 +435,7 @@
 
   function shownTime() {
     if (pinned !== null) {
-      if (Math.abs(mediaTime() - pinned) < 0.4) pinned = null;
+      if (Math.abs(mediaTime() - pinned) < 0.35) pinned = null;
       else return pinned;
     }
     return mediaTime();
@@ -279,50 +443,115 @@
 
   function clock(ms) {
     var s = Math.max(0, Math.ceil(ms / 1000));
-    return String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0");
-  }
-
-  function remainLabel(t) {
-    return clock(60000 - ((t * 1000) % 60000));
+    var m = Math.floor(s / 60);
+    var r = s % 60;
+    return m + ":" + String(r).padStart(2, "0");
   }
 
   function setText(el, text) {
     if (el.textContent !== text) el.textContent = text;
   }
 
-  function lineAt(t) {
-    for (var i = 0; i < AFFIRMATIONS.length; i++) {
-      var row = AFFIRMATIONS[i];
-      if (t >= row[0] && t < row[1]) return row[2];
+  function lineAt(w) {
+    var text = "";
+    for (var i = 0; i < LINES.length; i++) {
+      if (w >= LINES[i][0]) text = LINES[i][1];
+      else break;
     }
-    return "";
+    return text;
   }
 
-  function paint(t) {
-    var done = t >= TOTAL;
-    var index = Math.min(MOVES.length - 1, Math.floor(Math.max(0, t) / 60));
-    setText(stepEl, done ? "9 of 9 · Done" : (index + 1) + " of 9");
-    setText(moveEl, done ? "Routine complete" : MOVES[index]);
-    setText(remainEl, done ? clock(0) : remainLabel(t));
-    setText(lineEl, done ? "" : lineAt(t));
-    toggle.hidden = done;
-    if (!done) {
-      var playing = !track.paused || pendingPlay;
-      setText(toggle, playing ? "Pause" : (started ? "Resume" : "Start"));
+  function paintDots(current, mode) {
+    for (var i = 0; i < dots.length; i++) {
+      var cls = "";
+      if (mode === "done" || (mode === "run" && i < current)) cls = "done";
+      else if (mode === "run" && i === current) cls = "on";
+      if (dots[i].className !== cls) dots[i].className = cls;
     }
+    var label = mode === "done" ? "All 9 moves complete" : "Move " + (current + 1) + " of 9";
+    if (dotsEl.getAttribute("aria-label") !== label) dotsEl.setAttribute("aria-label", label);
+  }
+
+  function paintBar(pct) {
+    var width = Math.max(0, Math.min(100, pct)) + "%";
+    if (fillEl.style.width !== width) fillEl.style.width = width;
+  }
+
+  function paintIdle() {
+    live.hidden = false;
+    done.hidden = true;
+    setText(stepEl, "1 of 9");
+    setText(moveEl, MOVES[0]);
+    setText(nextEl, "");
+    setText(timerEl, "1:00");
+    timerEl.setAttribute("aria-label", "Time remaining 1:00");
+    setText(lineEl, "");
+    paintBar(0);
+    paintDots(0, "idle");
+    backBtn.disabled = true;
+    nextBtn.disabled = true;
+    setText(toggle, "Start");
+  }
+
+  function paintReady(t) {
+    live.hidden = false;
+    done.hidden = true;
+    var n = Math.max(1, Math.ceil(LEAD - t));
+    setText(stepEl, "Starting");
+    setText(moveEl, "Get ready");
+    setText(nextEl, "");
+    setText(timerEl, String(n));
+    timerEl.setAttribute("aria-label", "Get ready " + n);
+    setText(lineEl, "");
+    paintBar((t / LEAD) * 100);
+    paintDots(0, "ready");
+    backBtn.disabled = true;
+    nextBtn.disabled = true;
+    setText(toggle, (!track.paused || pendingPlay) ? "Pause" : "Resume");
+  }
+
+  function paintRun(w) {
+    live.hidden = false;
+    done.hidden = true;
+    var index = Math.min(MOVES.length - 1, Math.floor(Math.max(0, w) / 60));
+    var into = w - index * 60;
+    var label = clock(60000 - ((w * 1000) % 60000));
+    setText(stepEl, (index + 1) + " of 9");
+    setText(moveEl, MOVES[index]);
+    setText(nextEl, into >= 50 ? (index >= MOVES.length - 1 ? "Next: Finish" : "Next: " + MOVES[index + 1]) : "");
+    setText(timerEl, label);
+    timerEl.setAttribute("aria-label", "Time remaining " + label);
+    setText(lineEl, lineAt(w));
+    paintBar((into / 60) * 100);
+    paintDots(index, "run");
+    backBtn.disabled = index === 0 && into <= 3;
+    nextBtn.disabled = false;
+    setText(toggle, (!track.paused || pendingPlay) ? "Pause" : "Resume");
+  }
+
+  function paintDone() {
+    live.hidden = true;
+    done.hidden = false;
+    paintDots(MOVES.length - 1, "done");
   }
 
   function sync() {
-    paint(shownTime());
+    if (!started) paintIdle();
+    else {
+      var t = shownTime();
+      if (t < LEAD) paintReady(t);
+      else if (t - LEAD >= TOTAL) paintDone();
+      else paintRun(t - LEAD);
+    }
+    updateSession();
   }
 
-  function setStatus(text) {
+  function setStatus(text, isError) {
     setText(statusEl, text);
+    statusEl.className = isError ? "status error" : "status";
   }
 
-  function stopLoop() {
-    loopGen += 1;
-  }
+  function stopLoop() { loopGen += 1; }
 
   function startLoop() {
     var gen = ++loopGen;
@@ -356,36 +585,20 @@
     }).catch(function () {});
   }
 
-  function unlockAndPlay() {
-    track.playsInline = true;
-    track.setAttribute("playsinline", "");
-    track.setAttribute("webkit-playsinline", "");
-    track.muted = false;
-    track.volume = 1;
+  function arm(el) {
+    el.playsInline = true;
+    el.setAttribute("playsinline", "");
+    el.setAttribute("webkit-playsinline", "");
+    el.muted = false;
+    el.volume = 1;
+  }
+
+  function playTrack() {
+    arm(track);
     return track.play();
   }
 
-  toggle.addEventListener("click", function () {
-    if (shownTime() >= TOTAL) return;
-    if (!track.paused || pendingPlay) {
-      pendingPlay = false;
-      track.pause();
-      sync();
-      return;
-    }
-    started = true;
-    pendingPlay = true;
-    var pending;
-    try {
-      pending = unlockAndPlay();
-    } catch (err) {
-      pendingPlay = false;
-      setStatus("Sound did not start. Tap Start again.");
-      sync();
-      return;
-    }
-    setStatus("");
-    sync();
+  function watchPlay(pending) {
     if (pending && typeof pending.then === "function") {
       pending.then(function () {
         pendingPlay = false;
@@ -393,33 +606,157 @@
       }).catch(function (err) {
         pendingPlay = false;
         if (!err || err.name !== "AbortError") {
-          setStatus("Sound did not start. Tap Start again.");
+          setStatus("Sound did not start. Tap Start again.", true);
         }
         sync();
       });
     } else {
       pendingPlay = false;
     }
+  }
+
+  function updateSession() {
+    if (!("mediaSession" in navigator)) return;
+    var now = Date.now();
+    if (now - lastSession < 500) return;
+    lastSession = now;
+    try {
+      navigator.mediaSession.playbackState = track.paused ? "paused" : "playing";
+      if (isFinite(track.duration) && isFinite(track.currentTime)) {
+        navigator.mediaSession.setPositionState({
+          duration: track.duration,
+          playbackRate: track.playbackRate || 1,
+          position: Math.min(Math.max(0, track.currentTime), track.duration)
+        });
+      }
+    } catch (err) {}
+  }
+
+  function setupSession() {
+    if (!("mediaSession" in navigator) || !window.MediaMetadata) return;
+    try {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: "9-Minute Workout",
+        artist: "Gigi",
+        album: "Augie"
+      });
+      navigator.mediaSession.setActionHandler("play", function () {
+        started = true;
+        pendingPlay = true;
+        watchPlay(playTrack());
+        sync();
+      });
+      navigator.mediaSession.setActionHandler("pause", function () {
+        pendingPlay = false;
+        track.pause();
+        sync();
+      });
+    } catch (err) {}
+  }
+
+  toggle.addEventListener("click", function () {
+    if (started && shownTime() - LEAD >= TOTAL) return;
+    if (!started) {
+      pinned = null;
+      try { track.currentTime = 0; } catch (err) {}
+    }
+    if (started && (!track.paused || pendingPlay)) {
+      pendingPlay = false;
+      track.pause();
+      sync();
+      return;
+    }
+    started = true;
+    pendingPlay = true;
+    setStatus("");
+    var pending;
+    try {
+      pending = playTrack();
+    } catch (err) {
+      pendingPlay = false;
+      setStatus("Sound did not start. Tap Start again.", true);
+      sync();
+      return;
+    }
+    sync();
+    watchPlay(pending);
   });
 
-  restartBtn.addEventListener("click", function () {
+  function restart() {
     stopLoop();
     pendingPlay = false;
     started = false;
     pinned = 0;
     setStatus("");
+    try { sample.pause(); } catch (err) {}
     track.pause();
     try { track.currentTime = 0; } catch (err) {}
     keepAwake(false);
     sync();
+  }
+  restartBtn.addEventListener("click", restart);
+  doneRestart.addEventListener("click", restart);
+
+  function seekWorkout(w) {
+    var target = LEAD + Math.max(0, Math.min(TOTAL, w));
+    pinned = target;
+    try { track.currentTime = target; } catch (err) {
+      setStatus("Couldn't skip yet. Try again in a moment.", true);
+    }
+    sync();
+  }
+
+  backBtn.addEventListener("click", function () {
+    if (!started) return;
+    var w = Math.max(0, shownTime() - LEAD);
+    if (w >= TOTAL) return;
+    var index = Math.floor(w / 60);
+    var into = w - index * 60;
+    if (index <= 0 || into > 3) seekWorkout(index * 60);
+    else seekWorkout((index - 1) * 60);
+  });
+
+  nextBtn.addEventListener("click", function () {
+    if (!started) return;
+    var w = Math.max(0, shownTime() - LEAD);
+    var index = Math.floor(Math.min(w, TOTAL - 0.001) / 60);
+    if (index >= MOVES.length - 1) seekWorkout(TOTAL);
+    else seekWorkout((index + 1) * 60);
+  });
+
+  testBtn.addEventListener("click", function () {
+    if (started && !track.paused) {
+      pendingPlay = false;
+      track.pause();
+    }
+    arm(sample);
+    try { sample.currentTime = 0; } catch (err) {}
+    var pending;
+    try {
+      pending = sample.play();
+    } catch (err) {
+      setStatus("Sound did not start. Tap Test sound again.", true);
+      sync();
+      return;
+    }
+    setStatus("Listen for a beep, then a voice.");
+    sync();
+    if (pending && pending.catch) {
+      pending.catch(function (err) {
+        if (!err || err.name !== "AbortError") {
+          setStatus("Sound did not start. Tap Test sound again.", true);
+        }
+      });
+    }
   });
 
   track.addEventListener("play", function () {
     keepAwake(true);
     startLoop();
+    setupSession();
   });
   track.addEventListener("playing", function () {
-    setStatus("");
+    if (statusEl.textContent.indexOf("could not load") !== -1) setStatus("");
     sync();
   });
   track.addEventListener("pause", function () {
@@ -430,7 +767,7 @@
     pendingPlay = false;
     stopLoop();
     keepAwake(false);
-    sync();
+    if (started) paintDone();
   });
   track.addEventListener("seeked", sync);
   track.addEventListener("timeupdate", sync);
@@ -441,8 +778,11 @@
   });
   track.addEventListener("error", function () {
     pendingPlay = false;
-    setStatus("Sound could not load. Check your connection and tap Start again.");
+    setStatus("Sound could not load. Check your connection and tap Start again.", true);
     sync();
+  });
+  sample.addEventListener("error", function () {
+    setStatus("Test sound could not load. Check your connection and tap again.", true);
   });
   document.addEventListener("visibilitychange", function () {
     if (document.visibilityState !== "visible") return;
