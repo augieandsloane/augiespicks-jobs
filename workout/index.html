@@ -239,6 +239,53 @@
     color: var(--muted);
     font-weight: 600;
   }
+  .share {
+    width: 100%;
+    max-width: 360px;
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 8px;
+    padding: 12px;
+    border: 1.5px solid var(--line);
+    border-radius: 16px;
+  }
+  .share-line {
+    margin: 0;
+    font-size: 0.98rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .share-row {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+  }
+  .share a,
+  .share button {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 8px 10px;
+    border-radius: 14px;
+    border: 1.5px solid var(--line);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 1rem;
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .share-note {
+    margin: 0;
+    min-height: 0;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .share-note:empty { display: none; }
   .sound-row {
     position: relative;
     width: 100%;
@@ -313,6 +360,8 @@
     #restart, #test { min-height: 44px; }
     .hint, .fine { font-size: 0.76rem; }
     .line { line-height: 1.08; }
+    .share { margin-top: 4px; padding: 8px; gap: 6px; }
+    .share a, .share button { min-height: 44px; }
   }
 </style>
 </head>
@@ -347,6 +396,15 @@
     <div class="stage">
       <p class="timer done-word">Done</p>
       <p class="sub">All 9 moves.</p>
+      <aside class="share">
+        <p class="share-line">Liked this? Follow for more</p>
+        <div class="share-row">
+          <a href="https://www.tiktok.com/@augiespicks" target="_blank" rel="noopener">TikTok</a>
+          <a href="https://www.instagram.com/augiespicks/" target="_blank" rel="noopener">Instagram</a>
+        </div>
+        <button type="button" id="share-btn">Share</button>
+        <p id="share-note" class="share-note" role="status"></p>
+      </aside>
     </div>
     <button type="button" id="done-restart">Restart</button>
   </section>
@@ -421,7 +479,15 @@
   var restartBtn = document.getElementById("restart");
   var doneRestart = document.getElementById("done-restart");
   var testBtn = document.getElementById("test");
+  var shareBtn = document.getElementById("share-btn");
+  var shareNote = document.getElementById("share-note");
   var statusEl = document.getElementById("status");
+  var shareTimer = 0;
+  var SHARE = {
+    title: "9-Minute Workout",
+    text: "Augie's 9-minute workout",
+    url: "https://augiesidehustle.com/workout/"
+  };
 
   var started = false;
   var pendingPlay = false;
@@ -741,6 +807,53 @@
     var index = Math.floor(Math.min(w, TOTAL - 0.001) / 60);
     if (index >= MOVES.length - 1) seekWorkout(TOTAL);
     else seekWorkout((index + 1) * 60);
+  });
+
+  function showCopied() {
+    setText(shareNote, "Link copied");
+    clearTimeout(shareTimer);
+    shareTimer = setTimeout(function () { setText(shareNote, ""); }, 2500);
+  }
+
+  function copyLink() {
+    var url = SHARE.url;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).then(showCopied).catch(fallbackCopy);
+      return;
+    }
+    fallbackCopy();
+  }
+
+  function fallbackCopy() {
+    var field = document.createElement("textarea");
+    field.value = SHARE.url;
+    field.setAttribute("readonly", "");
+    field.style.position = "fixed";
+    field.style.left = "-9999px";
+    document.body.appendChild(field);
+    field.select();
+    try {
+      if (document.execCommand("copy")) showCopied();
+    } catch (err) {}
+    document.body.removeChild(field);
+  }
+
+  shareBtn.addEventListener("click", function () {
+    if (navigator.share) {
+      try {
+        var pending = navigator.share(SHARE);
+        if (pending && pending.catch) {
+          pending.catch(function (err) {
+            if (!err || err.name !== "AbortError") copyLink();
+          });
+        }
+        return;
+      } catch (err) {
+        copyLink();
+        return;
+      }
+    }
+    copyLink();
   });
 
   testBtn.addEventListener("click", function () {
